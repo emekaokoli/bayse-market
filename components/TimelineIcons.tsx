@@ -2,7 +2,11 @@
 
 import * as React from "react";
 import Image from "next/image";
-import type { GenericIconProps } from "@twilio-paste/icons/esm/types";
+interface GenericIconProps {
+  decorative: boolean;
+  title?: string;
+  size?: number;
+}
 
 function createCustomIcon(src: string, alt: string) {
   const CustomIcon: React.FC<React.PropsWithChildren<GenericIconProps>> = (props) => {
