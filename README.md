@@ -131,4 +131,4 @@ pnpm run test:watch  # watch mode
 
 ## Deployment
 
-url: https://bayse-market.vercel.app/ (Vercel)
+Live Demo: https://bayse-market.vercel.app

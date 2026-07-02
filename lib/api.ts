@@ -20,13 +20,13 @@ async function fetchApi<T>(path: string): Promise<ApiResult<T>> {
     const res = await fetch(`${API_BASE}${path}`, {
       headers: { "X-Public-Key": API_KEY },
     });
-    const data = await res.json();
-    const httpStatus = data._httpStatus ?? res.status;
-    if (httpStatus >= 400) {
-      return { data: null, error: data.message || `HTTP ${httpStatus}` };
+    const body = await res.json();
+    const { _data, _httpStatus } = body;
+    const status = _httpStatus ?? res.status;
+    if (status >= 400) {
+      return { data: null, error: _data?.message || _data?.error || `HTTP ${status}` };
     }
-    const { _httpStatus, ...clean } = data;
-    return { data: clean as T, error: null };
+    return { data: _data as T, error: null };
   } catch (e) {
     return { data: null, error: e instanceof Error ? e.message : "Fetch failed" };
   }

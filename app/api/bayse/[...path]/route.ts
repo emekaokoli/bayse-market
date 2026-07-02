@@ -20,17 +20,10 @@ export async function GET(
     const res = await fetch(url, {
       headers: { "X-Public-Key": apiKey },
     });
-    const contentType = res.headers.get("content-type") ?? "";
-    if (contentType.includes("application/json")) {
-      const data = await res.json();
-      return NextResponse.json({ ...data, _httpStatus: res.status }, { status: 200 });
-    }
-    const text = await res.text();
-    console.error(`[Bayse API] ${res.status} ${url}: ${text.slice(0, 300)}`);
-    return NextResponse.json(
-      { error: `Bayse API returned ${res.status}`, detail: text.slice(0, 200) },
-      { status: 502 }
-    );
+    const data = res.headers.get("content-type")?.includes("application/json")
+      ? await res.json()
+      : { error: `Bayse API returned ${res.status}`, detail: await res.text() };
+    return NextResponse.json({ _data: data, _httpStatus: res.status }, { status: 200 });
   } catch (err) {
     console.error("[Bayse API] Fetch failed:", err);
     return NextResponse.json(
