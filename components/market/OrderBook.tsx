@@ -68,11 +68,11 @@ export default function OrderBook({
 
   const { data: raw, loading, error, refetch } = useOrderBook(marketId);
 
-  const sortedBids = raw
-    ? [...raw.bids].sort((a, b) => b.price - a.price)
+  const sortedBids = raw?.bids
+    ? [...raw.bids]?.sort((a, b) => b.price - a.price)
     : [];
-  const sortedAsks = raw
-    ? [...raw.asks].sort((a, b) => a.price - b.price)
+  const sortedAsks = raw?.asks
+    ? [...raw.asks]?.sort((a, b) => a.price - b.price)
     : [];
 
   const allAmounts = [
@@ -99,7 +99,7 @@ export default function OrderBook({
       <div className="p-5">
         {/* Tabs */}
         <div className="flex gap-2 mb-3">
-          {(["Yes Offers", "No Offers"] as Tab[]).map((t) => (
+          {(["Yes Offers", "No Offers"] as Tab[])?.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -122,7 +122,7 @@ export default function OrderBook({
         {/* Loading */}
         {loading && (
           <div className="space-y-2 py-4">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 5 })?.map((_, i) => (
               <div key={i} className="h-7 rounded animate-pulse bg-[#F1F5F9]" />
             ))}
           </div>

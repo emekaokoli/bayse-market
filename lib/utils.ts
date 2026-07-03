@@ -47,8 +47,8 @@ export function augmentOrderBook(raw: {
   bids: OrderLevel[];
   asks: OrderLevel[];
 }): AugmentedOrderBook {
-  const sortedBids = [...raw.bids].sort((a, b) => b.price - a.price);
-  const sortedAsks = [...raw.asks].sort((a, b) => a.price - b.price);
+  const sortedBids = [...(raw.bids ?? [])].sort((a, b) => b.price - a.price);
+  const sortedAsks = [...(raw.asks ?? [])].sort((a, b) => a.price - b.price);
 
   let bidCum = 0;
   const augBids = sortedBids.map((l) => {

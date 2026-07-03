@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   ApiResult,
   Event,
-  Ticker,
   OrderBook,
-  Trade,
   PricePoint,
+  Ticker,
   Timeframe,
+  Trade,
 } from "./types";
 
 const API_BASE =
@@ -188,20 +189,20 @@ function normalizeTicker(raw: any): Ticker {
  */
 function normalizeOrderBook(raw: any): OrderBook {
   return {
-    bids: (raw.bids ?? []).map((b: any) => ({
+    bids: (raw?.bids ?? []).map((b: any) => ({
       price: b.price,
       size: b.quantity,
       total: b.total,
     })),
-    asks: (raw.asks ?? []).map((a: any) => ({
+    asks: (raw?.asks ?? []).map((a: any) => ({
       price: a.price,
       size: a.quantity,
       total: a.total,
     })),
-    outcomeId: raw.outcomeId,
-    timestamp: raw.timestamp,
-    lastTradedPrice: raw.lastTradedPrice,
-    lastTradedSide: raw.lastTradedSide,
+    outcomeId: raw?.outcomeId,
+    timestamp: raw?.timestamp,
+    lastTradedPrice: raw?.lastTradedPrice,
+    lastTradedSide: raw?.lastTradedSide,
   };
 }
 
@@ -218,7 +219,7 @@ function normalizeTrades(rawTrades: any[]): Trade[] {
 function normalizePriceHistory(raw: any): PricePoint[] {
   const allPoints: PricePoint[] = [];
   for (const market of raw?.markets ?? []) {
-    for (const point of market.priceHistory ?? []) {
+    for (const point of market?.priceHistory ?? []) {
       allPoints.push({
         timestamp: new Date(point.e).toISOString(),
         price: point.p,
@@ -242,7 +243,8 @@ export async function getEventBySlug(slug: string): Promise<ApiResult<Event>> {
     `/v1/pm/events/slug/${slug}?currency=NGN`
   );
   if (result.data) {
-    return { data: normalizeEvent(result.data), error: null };
+    const raw = Array.isArray(result.data) ? result.data[0] : result.data;
+    return { data: normalizeEvent(raw), error: null };
   }
   return { data: MOCK_EVENT, error: null };
 }
@@ -259,7 +261,8 @@ export async function getTicker(marketId: string): Promise<ApiResult<Ticker>> {
     `/v1/pm/markets/${marketId}/ticker?outcome=YES`
   );
   if (result.data) {
-    return { data: normalizeTicker(result.data), error: null };
+    const raw = Array.isArray(result.data) ? result.data[0] : result.data;
+    return { data: normalizeTicker(raw), error: null };
   }
   return result;
 }
@@ -284,8 +287,12 @@ export async function getOrderBook(
   const result = await fetchApi<any>(
     `/v1/pm/books?outcomeId[]=${outcomeId}&depth=12&currency=NGN`
   );
-  if (result.data && Array.isArray(result.data) && result.data.length > 0) {
-    return { data: normalizeOrderBook(result.data[0]), error: null };
+  if (result.data) {
+    const raw = Array.isArray(result.data)
+      ? result.data[0]
+      : result.data;
+    if (!raw) return result as ApiResult<OrderBook>;
+    return { data: normalizeOrderBook(raw), error: null };
   }
   return result as ApiResult<OrderBook>;
 }

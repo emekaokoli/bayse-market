@@ -28,7 +28,7 @@ export default function MarketHeader({
         {onRetry && (
           <button
             onClick={onRetry}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0066FF] border border-[#0066FF] rounded-lg px-3 py-1.5 hover:bg-blue-50 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0066FF] border border-[#0066FF] rounded-lg px-3 py-1.5 hover:bg-blue-50 transition-colors cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" /> Retry
           </button>
